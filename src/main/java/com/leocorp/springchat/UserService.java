@@ -15,6 +15,10 @@ public class UserService {
         users.add(new User(UUID.randomUUID(), name));
     }
 
+    public boolean removeUser(UUID uuid) {
+        return users.removeIf(user -> user.uuid.equals(uuid));
+    }
+
     public List<User> getUsers() {
         return List.copyOf(users);
     }

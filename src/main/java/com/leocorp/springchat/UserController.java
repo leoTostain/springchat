@@ -1,11 +1,9 @@
 package com.leocorp.springchat;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @CrossOrigin
 @RestController
@@ -21,8 +19,17 @@ public class UserController {
      * @param name String
      */
     @PostMapping("/addUser")
-    public void addUsers(String name) {
+    public void addUser(String name) {
         userService.createUser(name);
+    }
+
+    /**
+     * Remove a user from its uuid
+     * @param uuid String
+     */
+    @DeleteMapping("/removeUser")
+    public boolean removeUser(String uuid) {
+        return userService.removeUser(UUID.fromString(uuid));
     }
 
     /**
