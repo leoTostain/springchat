@@ -23,11 +23,20 @@ public class HelloController {
         return toto;
     }
 
+    /**
+     * Function saying hello !
+     * @return A string
+     */
     @GetMapping("/hello")
     public String hello1() {
         return helloService.sayHello();
     }
 
+    /**
+     * Return a record
+     *
+     * @return A record of the type MyRecord
+     */
     @GetMapping("/records")
     public MyRecord records() {
         return new MyRecord("toto", LocalDate.now());
