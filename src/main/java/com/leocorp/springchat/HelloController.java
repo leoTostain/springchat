@@ -1,10 +1,12 @@
 package com.leocorp.springchat;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 
+@CrossOrigin
 @RestController
 public class HelloController {
     public record MyRecord(String name, LocalDate date) { }
