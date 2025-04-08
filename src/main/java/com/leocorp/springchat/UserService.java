@@ -11,12 +11,16 @@ public class UserService {
     public record User(UUID uuid, String name) {}
     private final List<User> users = new ArrayList<>();
 
-    public void createUser(String name) {
-        users.add(new User(UUID.randomUUID(), name));
+    public UUID createUser(String name) {
+        var uuid = UUID.randomUUID();
+        users.add(new User(uuid, name));
+        return uuid;
     }
 
-    public boolean removeUser(UUID uuid) {
-        return users.removeIf(user -> user.uuid.equals(uuid));
+    public void removeUser(UUID uuid) {
+        if (!users.removeIf(user -> user.uuid.equals(uuid))) {
+            throw new UserNotFoundException("User not found for the given uuid");
+        }
     }
 
     public List<User> getUsers() {

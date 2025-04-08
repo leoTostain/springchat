@@ -1,5 +1,9 @@
 package com.leocorp.springchat;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,25 +21,38 @@ public class UserController {
     /**
      * Create a new user from a name
      * @param name String
+     * @return UUID
      */
+    @Operation(summary = "Create a new user from a name")
+    @ApiResponse(responseCode = "201", description = "User created")
+    @ResponseStatus(code = HttpStatus.CREATED)
     @PostMapping("/addUser")
-    public void addUser(String name) {
-        userService.createUser(name);
+    public UUID addUser(String name) {
+        return userService.createUser(name);
     }
 
     /**
      * Remove a user from its uuid
      * @param uuid String
      */
+    @Operation(summary = "Remove a user from its uuid")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "User has been deleted"),
+            @ApiResponse(responseCode = "404", description = "No user found for the given uuid"),
+            @ApiResponse(responseCode = "400", description = "Given uuid does not follow uuid standards")})
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
     @DeleteMapping("/removeUser")
-    public boolean removeUser(String uuid) {
-        return userService.removeUser(UUID.fromString(uuid));
+    public void removeUser(String uuid) {
+        userService.removeUser(UUID.fromString(uuid));
     }
 
     /**
      * Get a list of users
      * @return A list of all the users
      */
+    @Operation(summary = "Retrieve a list of all users")
+    @ApiResponse(responseCode = "200", description = "All users retrieved")
+    @ResponseStatus(code = HttpStatus.OK)
     @GetMapping("/users")
     public List<UserService.User> getUsers() {
         return userService.getUsers();
