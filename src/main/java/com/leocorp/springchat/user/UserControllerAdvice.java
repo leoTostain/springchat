@@ -1,4 +1,4 @@
-package com.leocorp.springchat;
+package com.leocorp.springchat.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
