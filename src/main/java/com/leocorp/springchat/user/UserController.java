@@ -1,5 +1,6 @@
-package com.leocorp.springchat;
+package com.leocorp.springchat.user;
 
+import com.leocorp.springchat.user.dto.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -54,7 +55,7 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "All users retrieved")
     @ResponseStatus(code = HttpStatus.OK)
     @GetMapping("/users")
-    public List<UserService.User> getUsers() {
-        return userService.getUsers();
+    public List<User> getUsers() {
+        return UserMapper.UserEntityListToUserList(userService.getUsers());
     }
 }
