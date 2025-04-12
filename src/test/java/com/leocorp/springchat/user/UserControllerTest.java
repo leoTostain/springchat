@@ -1,4 +1,4 @@
-package com.leocorp.springchat;
+package com.leocorp.springchat.user;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

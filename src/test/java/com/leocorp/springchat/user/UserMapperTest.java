@@ -1,7 +1,6 @@
-package com.leocorp.springchat;
+package com.leocorp.springchat.user;
 
 
-import com.leocorp.springchat.user.UserMapper;
 import com.leocorp.springchat.user.dao.UserEntity;
 import com.leocorp.springchat.user.dto.User;
 import org.junit.jupiter.api.Test;

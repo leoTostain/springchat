@@ -1,6 +1,5 @@
-package com.leocorp.springchat;
+package com.leocorp.springchat.user;
 
-import com.leocorp.springchat.user.UserService;
 import com.leocorp.springchat.user.dao.UserRepository;
 import com.leocorp.springchat.user.exception.UserNotFoundException;
 import org.junit.jupiter.api.Test;
