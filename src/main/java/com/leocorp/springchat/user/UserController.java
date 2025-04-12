@@ -2,6 +2,7 @@ package com.leocorp.springchat.user;
 
 import com.leocorp.springchat.user.dto.User;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
@@ -21,30 +22,46 @@ public class UserController {
 
     /**
      * Create a new user from a username
-     * @param name String
-     * @return UUID
+     * @param username the user's username
+     * @return the user
      */
     @Operation(summary = "Create a new user from a username")
     @ApiResponse(responseCode = "201", description = "User created")
     @ResponseStatus(code = HttpStatus.CREATED)
     @PostMapping("/addUser")
-    public User addUser(String name) {
-        return UserMapper.UserEntityToUser(userService.createUser(name));
+    public User addUser(String username) {
+        return UserMapper.UserEntityToUser(userService.createUser(username));
     }
 
     /**
      * Remove a user from its uuid
-     * @param uuid String
+     * @param uuid the user's uuid
      */
     @Operation(summary = "Remove a user from its uuid")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "User has been deleted"),
-            @ApiResponse(responseCode = "404", description = "No user found for the given uuid"),
-            @ApiResponse(responseCode = "400", description = "Given uuid does not follow uuid standards")})
+            @ApiResponse(responseCode = "404", description = "No user found for the given uuid", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Given uuid does not follow uuid standards",
+                    content = @Content)})
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     @DeleteMapping("/removeUser")
-    public void removeUser(String uuid) {
-        userService.removeUser(UUID.fromString(uuid));
+    public void removeUser(UUID uuid) {
+        userService.removeUser(uuid);
+    }
+
+    /**
+     * Get a user
+     * @param uuid the user's uuid
+     * @return the user
+     */
+    @Operation(summary = "Retrieve a user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User retrieved"),
+            @ApiResponse(responseCode = "404", description = "No user found for the given uuid", content = @Content)})
+    @ResponseStatus(code = HttpStatus.OK)
+    @GetMapping("/user")
+    public User getUser(UUID uuid) {
+        return UserMapper.UserEntityToUser(userService.getUser(uuid));
     }
 
     /**
