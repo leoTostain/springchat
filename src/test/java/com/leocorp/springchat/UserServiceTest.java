@@ -33,6 +33,11 @@ public class UserServiceTest {
     }
 
     @Test
+    void addUserUsernameIsEmpty() {
+        assertThatThrownBy(() -> userService.createUser("")).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     void addUserReturnIsNotNull() {
         assertThat(userService.createUser("user5")).isNotNull();
     }

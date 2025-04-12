@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 public class UserMapperTest {
 
     private static boolean UserEntityEqualsUser(UserEntity userEntity, User user) {
@@ -15,10 +17,20 @@ public class UserMapperTest {
     }
 
     @Test
+    void mapUserEntityToUserThrowsNPEWhenNull() {
+        assertThatThrownBy(() -> UserMapper.UserEntityToUser(null)).isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
     public void mapUserEntityToUser() {
         var userEntity = new UserEntity("user");
         var user = UserMapper.UserEntityToUser(userEntity);
         assert(UserEntityEqualsUser(userEntity, user));
+    }
+
+    @Test
+    void mapUserEntityListToUserListThrowsNPEWhenNull() {
+        assertThatThrownBy(() -> UserMapper.UserEntityListToUserList(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
