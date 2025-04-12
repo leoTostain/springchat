@@ -12,4 +12,6 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
     @Transactional
     int deleteByUuid(UUID uuid);
     List<UserEntity> findAll();
+
+    UserEntity getByUuid(UUID uuid);
 }
