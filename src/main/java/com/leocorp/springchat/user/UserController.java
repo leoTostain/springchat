@@ -26,7 +26,10 @@ public class UserController {
      * @return the user
      */
     @Operation(summary = "Create a new user from a username")
-    @ApiResponse(responseCode = "201", description = "User created")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "User created"),
+            @ApiResponse(responseCode = "400", description = "Username must be at least 3 character long",
+            content = @Content)})
     @ResponseStatus(code = HttpStatus.CREATED)
     @PostMapping("/addUser")
     public User addUser(String username) {
@@ -41,7 +44,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "User has been deleted"),
             @ApiResponse(responseCode = "404", description = "No user found for the given uuid", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Given uuid does not follow uuid standards",
+            @ApiResponse(responseCode = "400", description = "The given uuid does not follow uuid standards",
                     content = @Content)})
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     @DeleteMapping("/removeUser")

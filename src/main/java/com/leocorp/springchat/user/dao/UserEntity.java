@@ -20,6 +20,10 @@ public class UserEntity {
     public UserEntity() {}
 
     public UserEntity(String username) {
+        Objects.requireNonNull(username);
+        if (username.length() < 3) {
+            throw new IllegalArgumentException("Username must be at least 3 characters long");
+        }
         this.username = username;
         this.uuid = UUID.randomUUID();
     }
