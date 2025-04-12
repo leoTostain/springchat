@@ -20,16 +20,16 @@ public class UserController {
     }
 
     /**
-     * Create a new user from a name
+     * Create a new user from a username
      * @param name String
      * @return UUID
      */
-    @Operation(summary = "Create a new user from a name")
+    @Operation(summary = "Create a new user from a username")
     @ApiResponse(responseCode = "201", description = "User created")
     @ResponseStatus(code = HttpStatus.CREATED)
     @PostMapping("/addUser")
-    public UUID addUser(String name) {
-        return userService.createUser(name);
+    public User addUser(String name) {
+        return UserMapper.UserEntityToUser(userService.createUser(name));
     }
 
     /**

@@ -9,5 +9,4 @@ class SpringChatApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

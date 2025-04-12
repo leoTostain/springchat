@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -48,5 +49,25 @@ public class UserEntity {
 
     public Long getId() {
         return id;
+    }
+
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", uuid=" + uuid +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof UserEntity that)) return false;
+        return Objects.equals(id, that.id) && Objects.equals(username, that.username) && Objects.equals(uuid, that.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, uuid);
     }
 }
