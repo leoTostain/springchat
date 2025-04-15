@@ -5,11 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -23,7 +25,7 @@ public class UserControllerTest {
 
     @Test
     void createUserNoUsernameThrowsIAE() throws Exception {
-        this.mockMvc.perform(post("/addUser")
+        this.mockMvc.perform(post("/addUser").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -31,7 +33,7 @@ public class UserControllerTest {
 
     @Test
     void createUserBadUsernameThrowsIAE() throws Exception {
-        this.mockMvc.perform(post("/addUser")
+        this.mockMvc.perform(post("/addUser").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("username","")
                         .accept(MediaType.APPLICATION_JSON))
@@ -40,7 +42,7 @@ public class UserControllerTest {
 
     @Test
     void createUserReturnUser() throws Exception {
-        this.mockMvc.perform(post("/addUser")
+        this.mockMvc.perform(post("/addUser").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("username","test")
                 .accept(MediaType.APPLICATION_JSON))
@@ -50,35 +52,39 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.uuid").exists());
     }
 
+    @WithMockUser(authorities="USER")
     @Test
     void deleteUserNoUuidThrowsIAE() throws Exception {
-        this.mockMvc.perform(delete("/removeUser")
+        this.mockMvc.perform(delete("/removeUser").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
+    @WithMockUser(authorities="USER")
     @Test
     void deleteUserBadUuidThrowsIAE() throws Exception {
-        this.mockMvc.perform(delete("/removeUser")
+        this.mockMvc.perform(delete("/removeUser").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("uuid", "not an uuid")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
+    @WithMockUser(authorities="USER")
     @Test
     void deleteUserRandomUuidThrowsUNFE() throws Exception {
-        this.mockMvc.perform(delete("/removeUser")
+        this.mockMvc.perform(delete("/removeUser").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("uuid", UUID.randomUUID().toString())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
+    @WithMockUser(authorities="USER")
     @Test
     void deleteUserStatusNoContent() throws Exception {
-        this.mockMvc.perform(delete("/removeUser")
+        this.mockMvc.perform(delete("/removeUser").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("uuid","ea5b550e-0b1f-4f51-bb7f-b4c3e023abc6")
                         .accept(MediaType.APPLICATION_JSON))
