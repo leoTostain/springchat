@@ -21,7 +21,7 @@ public class SecurityConfig {
                         .requestMatchers("/addUser", "/user", "/users").permitAll()
                         .requestMatchers("/removeUser").hasAuthority("USER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().denyAll()
+                        .anyRequest().permitAll()
                 );
 
         return http.build();
