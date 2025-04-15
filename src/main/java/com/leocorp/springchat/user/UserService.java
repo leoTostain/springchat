@@ -1,8 +1,11 @@
 package com.leocorp.springchat.user;
 
+import com.leocorp.springchat.user.dao.AuthorityEntity;
 import com.leocorp.springchat.user.dao.UserEntity;
 import com.leocorp.springchat.user.dao.UserRepository;
+import com.leocorp.springchat.user.dto.UserCredential;
 import com.leocorp.springchat.user.exception.UserNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,20 +15,24 @@ import java.util.UUID;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
      * Create a user
-     * @param username The user's username
+     * @param credential The user's credentials
      * @return a new instance of UserEntity
      * @throws NullPointerException if username is null
      */
-    public UserEntity createUser(String username) {
-        Objects.requireNonNull(username);
-        var newUser = new UserEntity(username);
+    public UserEntity createUser(UserCredential credential) {
+        Objects.requireNonNull(credential);
+
+        var newUser = new UserEntity(credential.username(), passwordEncoder.encode(credential.password()));
+        newUser.setAuthority(new AuthorityEntity(newUser, AuthorityEntity.AuthorityType.ROLE_USER));
         userRepository.save(newUser);
         return newUser;
     }
@@ -45,16 +52,16 @@ public class UserService {
 
     /**
      * Get a user from its uuid
-     * @param uuid the user's uuid
+     * @param username the user's username
      * @return The UserEntity of the user
-     * @throws NullPointerException if uuid is null
-     * @throws UserNotFoundException if no user is found for the given uuid
+     * @throws NullPointerException if username is null
+     * @throws UserNotFoundException if no user is found for the given username
      */
-    public UserEntity getUser(UUID uuid) {
-        Objects.requireNonNull(uuid);
-        var user = userRepository.getByUuid(uuid);
+    public UserEntity getUser(String username) {
+        Objects.requireNonNull(username);
+        var user = userRepository.getByUsername(username);
         if (user == null) {
-            throw new UserNotFoundException("User not found for the given uuid");
+            throw new UserNotFoundException("User not found for the given username");
         }
         return user;
     }

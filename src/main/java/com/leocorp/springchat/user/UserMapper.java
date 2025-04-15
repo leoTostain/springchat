@@ -1,21 +1,27 @@
 package com.leocorp.springchat.user;
 
 import com.leocorp.springchat.user.dao.UserEntity;
-import com.leocorp.springchat.user.dto.User;
+import com.leocorp.springchat.user.dto.UserPrivateInfo;
+import com.leocorp.springchat.user.dto.UserPublicInfo;
 
 import java.util.List;
 import java.util.Objects;
 
 public class UserMapper {
-    public static User UserEntityToUser(UserEntity userEntity) {
+    public static UserPrivateInfo UserEntityToUserPrivateInfo(UserEntity userEntity) {
         Objects.requireNonNull(userEntity);
-        return new User(userEntity.getUuid(), userEntity.getUsername());
+        return new UserPrivateInfo(userEntity.getUuid(), userEntity.getUsername());
     }
 
-    public static List<User> UserEntityListToUserList(List<UserEntity> userEntity) {
+    public static UserPublicInfo UserEntityToUserPublicInfo(UserEntity userEntity) {
+        Objects.requireNonNull(userEntity);
+        return new UserPublicInfo(userEntity.getUsername());
+    }
+
+    public static List<UserPublicInfo> UserEntityListToUserPublicInfoList(List<UserEntity> userEntity) {
         Objects.requireNonNull(userEntity);
         return userEntity.stream()
-                .map(UserMapper::UserEntityToUser)
+                .map(UserMapper::UserEntityToUserPublicInfo)
                 .toList();
     }
 }

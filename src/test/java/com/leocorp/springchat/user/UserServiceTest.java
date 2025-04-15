@@ -1,6 +1,7 @@
 package com.leocorp.springchat.user;
 
 import com.leocorp.springchat.user.dao.UserRepository;
+import com.leocorp.springchat.user.dto.UserCredential;
 import com.leocorp.springchat.user.exception.UserNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,39 +29,40 @@ public class UserServiceTest {
 
     @Test
     void addUserThrowsNullPointerExceptionIfUsernameIsNull() {
-        assertThatThrownBy(() -> userService.createUser(null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> userService.createUser(new UserCredential(null, null)))
+                .isInstanceOf(NullPointerException.class);
     }
 
     @Test
     void addUserUsernameIsEmpty() {
-        assertThatThrownBy(() -> userService.createUser("")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> userService.createUser(new UserCredential("", "")))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void addUserReturnIsNotNull() {
-        assertThat(userService.createUser("user5")).isNotNull();
+        assertThat(userService.createUser(new UserCredential("user5", "password"))).isNotNull();
     }
 
     @Test
     void addUserIsCreated() {
-        userService.createUser("user5");
+        userService.createUser(new UserCredential("user5", "password5"));
         assertThat(userRepository.findAll()).hasSize(5);
     }
 
     @Test
-    void getUserByUuidThrowsNullPointerExceptionIfUsernameIsNull() {
+    void getUserThrowsNullPointerExceptionIfUsernameIsNull() {
         assertThatThrownBy(() -> userService.getUser(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    void getUserByUuidThrowsUserNotFoundExceptionIfUsernameIsEmpty() {
-        assertThatThrownBy(() -> userService.getUser(UUID.randomUUID())).isInstanceOf(UserNotFoundException.class);
+    void getUserThrowsUserNotFoundExceptionIfUsernameIsWrong() {
+        assertThatThrownBy(() -> userService.getUser("notAnUser")).isInstanceOf(UserNotFoundException.class);
     }
 
     @Test
-    void getUserByUuidHasGoodUsername() {
-        assert(userService.getUser(
-                        UUID.fromString("957cbde3-7673-4bcc-8aa5-e6f861087a83"))
+    void getUserHasGoodUsername() {
+        assert(userService.getUser("user2")
                 .getUsername()
                 .equals("user2"));
     }
