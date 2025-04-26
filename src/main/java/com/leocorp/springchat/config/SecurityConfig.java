@@ -9,6 +9,7 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,18 +22,18 @@ import static jakarta.servlet.DispatcherType.FORWARD;
 @EnableWebSecurity
 public class SecurityConfig {
     @Bean
-    SecurityFilterChain web(HttpSecurity http) throws Exception {
-        http
-                // ...
+    SecurityFilterChain web(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
                 .authorizeHttpRequests(authorize -> authorize
                         .dispatcherTypeMatchers(FORWARD, ERROR).permitAll()
-                        .requestMatchers("/addUser", "/user", "/users").permitAll()
+                        .requestMatchers("/signIn", "/user", "/users").permitAll()
                         .requestMatchers("/removeUser").hasAuthority("USER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
-                );
+                )
+                .csrf(AbstractHttpConfigurer::disable);
 
-        return http.build();
+        return httpSecurity.build();
     }
 
     @Bean
