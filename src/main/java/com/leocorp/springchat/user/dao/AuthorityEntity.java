@@ -5,21 +5,22 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "authority_entity", uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})})
+@Table(name = "authority_entity", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
 public class AuthorityEntity {
     public enum AuthorityType {
-        ROLE_USER, ROLE_ADMIN
+        ROLE_ADMIN, ROLE_USER
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "username")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "user_id")
     private UserEntity user;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private AuthorityType authority;
 
     public AuthorityEntity() {}

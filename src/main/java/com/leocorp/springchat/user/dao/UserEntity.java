@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user_entity", uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})})
+@Table(name = "user_entity", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class UserEntity {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private final Set<AuthorityEntity> listAuthorities = new HashSet<>();
 
     public UserEntity() {}
