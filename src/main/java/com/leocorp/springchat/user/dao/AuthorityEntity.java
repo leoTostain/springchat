@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "authority_entity", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
+@Table(name = "authority_entity", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"}), @UniqueConstraint(columnNames = {"user_id", "authority"})})
 public class AuthorityEntity {
     public enum AuthorityType {
         ROLE_ADMIN, ROLE_USER
