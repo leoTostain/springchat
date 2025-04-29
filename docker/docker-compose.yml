@@ -3,8 +3,8 @@ services:
     image: postgres:16.1
     container_name: chat-postgres-DEV
     environment:
-      POSTGRES_USER: sa
-      POSTGRES_PASSWORD: sa
+      POSTGRES_USER: ${LOCAL_DB_USER}
+      POSTGRES_PASSWORD: ${LOCAL_DB_PWD}
       POSTGRES_DB: myprojectdb
     ports:
       - "5432:5432"
