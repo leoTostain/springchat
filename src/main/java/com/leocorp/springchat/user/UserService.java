@@ -4,7 +4,10 @@ import com.leocorp.springchat.user.dao.AuthorityEntity;
 import com.leocorp.springchat.user.dao.UserEntity;
 import com.leocorp.springchat.user.dao.UserRepository;
 import com.leocorp.springchat.user.dto.UserCredential;
+import com.leocorp.springchat.user.exception.UserAlreadyExistException;
+import com.leocorp.springchat.user.exception.UserNotAuthenticatedException;
 import com.leocorp.springchat.user.exception.UserNotFoundException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +30,16 @@ public class UserService {
      * @param credential The user's credentials
      * @return a new instance of UserEntity
      * @throws NullPointerException if username is null
+     * @throws UserAlreadyExistException if a user with the same username already exist
      */
     public UserEntity createUser(UserCredential credential) {
         Objects.requireNonNull(credential);
+
+        try {
+            if (getUser(credential.username()) != null) {
+                throw new UserAlreadyExistException();
+            }
+        } catch (UserNotFoundException ignored) {}
 
         var newUser = new UserEntity(credential.username(), passwordEncoder.encode(credential.password()));
         newUser.setAuthority(new AuthorityEntity(newUser, AuthorityEntity.AuthorityType.ROLE_USER));
@@ -48,6 +58,20 @@ public class UserService {
         if (userRepository.deleteByUuid(uuid) == 0) {
             throw new UserNotFoundException("User not found for the given uuid");
         }
+    }
+
+    /**
+     * Get the current authenticated user
+     * @return The UserEntity of the user
+     * @throws UserNotAuthenticatedException if the no user is currently authenticated
+     */
+    public UserEntity getCurrentUser() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new UserNotAuthenticatedException();
+        }
+
+        return userRepository.getByUsername(authentication.getName());
     }
 
     /**

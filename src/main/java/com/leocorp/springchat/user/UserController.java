@@ -9,14 +9,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
-@CrossOrigin(origins = "http://localhost:8081")
 @RestController
 public class UserController {
     private final UserService userService;
@@ -25,23 +22,6 @@ public class UserController {
     public UserController(UserService userService, AuthenticationManager authenticationManager) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
-    }
-
-    /**
-     * Login a user
-     * @param credential the user's credentials
-     */
-    @Operation(summary = "Login a user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Login successful"),
-            @ApiResponse(responseCode = "400", description = "Credentials does not follow the criteria",
-                    content = @Content)})
-    @ResponseStatus(code = HttpStatus.OK)
-    @PostMapping("/login")
-    public void login(UserCredential credential) {
-        Authentication authenticationRequest =
-                UsernamePasswordAuthenticationToken.unauthenticated(credential.username(), credential.password());
-        this.authenticationManager.authenticate(authenticationRequest);
     }
 
     /**
@@ -67,13 +47,29 @@ public class UserController {
     @Operation(summary = "Remove a user from its uuid")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "User has been deleted"),
+            @ApiResponse(responseCode = "401", description = "Authentication failed", content = @Content),
             @ApiResponse(responseCode = "404", description = "No user found for the given uuid", content = @Content),
             @ApiResponse(responseCode = "400", description = "The given uuid does not follow uuid standards",
                     content = @Content)})
+//    @SecurityRequirement(name = "basicAuth")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     @DeleteMapping("/removeUser")
     public void removeUser(UUID uuid) {
         userService.removeUser(uuid);
+    }
+
+    /**
+     * Get a user info
+     * @return the user private info
+     */
+    @Operation(summary = "Get the info of the current authenticated user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User retrieved"),
+            @ApiResponse(responseCode = "401", description = "Not authenticated", content = @Content)})
+    @ResponseStatus(code = HttpStatus.OK)
+    @GetMapping("/userInfo")
+    public UserPrivateInfo getAuthenticatedUser() {
+        return UserMapper.UserEntityToUserPrivateInfo(userService.getCurrentUser());
     }
 
     /**

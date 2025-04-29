@@ -2,10 +2,12 @@ package com.leocorp.springchat.user;
 
 import com.leocorp.springchat.user.dao.UserRepository;
 import com.leocorp.springchat.user.dto.UserCredential;
+import com.leocorp.springchat.user.exception.UserNotAuthenticatedException;
 import com.leocorp.springchat.user.exception.UserNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -48,6 +50,20 @@ public class UserServiceTest {
     void addUserIsCreated() {
         userService.createUser(new UserCredential("user5", "password5"));
         assertThat(userRepository.findAll()).hasSize(5);
+    }
+
+    @WithMockUser("user1")
+    @Test
+    void getUserReturnsUserPrivateInfo() {
+        assertThat(userService.getCurrentUser()).isNotNull();
+        assertThat(userService.getCurrentUser().getUsername()).isEqualTo("user1");
+        assertThat(userService.getCurrentUser().getUuid()).isEqualTo(UUID.fromString("dde47cf4-973a-45b3-b72f-39871c6c53de"));
+    }
+
+    @Test
+    void getUserThrowsUserNotAuthenticatedExceptionIfNotAuthenticated() {
+        assertThatThrownBy(() -> userService.getCurrentUser())
+                .isInstanceOf(UserNotAuthenticatedException.class);
     }
 
     @Test
