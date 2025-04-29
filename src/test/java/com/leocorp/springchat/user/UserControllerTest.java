@@ -24,7 +24,7 @@ public class UserControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    void signInNoCredentialThrowsIAE() throws Exception {
+    void signInNoCredentialIsBadRequest() throws Exception {
         this.mockMvc.perform(post("/signIn").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -32,7 +32,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void signInBadCredentialThrowsIAE() throws Exception {
+    void signInBadCredentialIsBadRequest() throws Exception {
         this.mockMvc.perform(post("/signIn").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("username","")
@@ -55,27 +55,25 @@ public class UserControllerTest {
     }
 
     @Test
-    void loginReturnUserPrivateInfo() throws Exception {
-        this.mockMvc.perform(post("/login")
-                        .contentType(MediaType.APPLICATION_JSON).with(csrf())
-                        .param("username","user1")
-                        .param("password","password1")
+    void deleteUserNotAuthenticatedIsRedirection() throws Exception {
+        this.mockMvc.perform(delete("/removeUser").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().is3xxRedirection());
     }
 
-    @WithMockUser(authorities="USER")
+    @WithMockUser(roles="USER")
     @Test
-    void deleteUserNoUuidThrowsIAE() throws Exception {
+    void deleteUserNoUuidIsBadRequest() throws Exception {
         this.mockMvc.perform(delete("/removeUser").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
-    @WithMockUser(authorities="USER")
+    @WithMockUser(roles="USER")
     @Test
-    void deleteUserBadUuidThrowsIAE() throws Exception {
+    void deleteUserBadUuidIsBadRequest() throws Exception {
         this.mockMvc.perform(delete("/removeUser").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("uuid", "not an uuid")
@@ -83,9 +81,9 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @WithMockUser(authorities="USER")
+    @WithMockUser(roles="USER")
     @Test
-    void deleteUserRandomUuidThrowsUNFE() throws Exception {
+    void deleteUserRandomUuidIsNotFound() throws Exception {
         this.mockMvc.perform(delete("/removeUser").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("uuid", UUID.randomUUID().toString())
@@ -93,9 +91,9 @@ public class UserControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @WithMockUser(authorities="USER")
+    @WithMockUser(roles="USER")
     @Test
-    void deleteUserStatusNoContent() throws Exception {
+    void deleteUserStatusIsNoContent() throws Exception {
         this.mockMvc.perform(delete("/removeUser").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("uuid","ea5b550e-0b1f-4f51-bb7f-b4c3e023abc6")
@@ -103,8 +101,27 @@ public class UserControllerTest {
                 .andExpect(status().isNoContent());
     }
 
+    @WithMockUser("user1")
     @Test
-    void getUserNoUuidThrowsIAE() throws Exception {
+    void getUserReturnsUserPrivateInfo() throws Exception {
+        this.mockMvc.perform(get("/userInfo")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("user1"))
+                .andExpect(jsonPath("$.uuid").value("dde47cf4-973a-45b3-b72f-39871c6c53de"));
+    }
+
+    @Test
+    void getUserNotAuthenticatedIsRedirection() throws Exception {
+        this.mockMvc.perform(get("/userInfo")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    void getUserNoUuidIsBadRequest() throws Exception {
         this.mockMvc.perform(get("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -112,7 +129,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void getUserBadUuidThrowsIAE() throws Exception {
+    void getUserBadUuidIsBadRequest() throws Exception {
         this.mockMvc.perform(get("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("uuid", "not an uuid")
@@ -121,7 +138,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void getUserRandomUuidThrowsUNFE() throws Exception {
+    void getUserRandomUuidIsNotFound() throws Exception {
         this.mockMvc.perform(get("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("username", "notAUser")
