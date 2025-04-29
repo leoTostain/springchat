@@ -31,7 +31,7 @@ public class SecurityConfig {
                         .dispatcherTypeMatchers(FORWARD, ERROR).permitAll()
                         .requestMatchers("/v3/api-docs/**",
                                 "/swagger-ui/**", "/swagger-ui.html").hasRole("ADMIN")
-                        .requestMatchers("/signIn", "/user", "/users", "/login").permitAll()
+                        .requestMatchers("/signIn", "/user", "/users", "/login", "/").permitAll()
                         .requestMatchers("/removeUser").hasRole("USER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
