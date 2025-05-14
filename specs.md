@@ -1,0 +1,2 @@
+* Ajout de commande utilisable dans le tchat pour communiquer avec le back (exemple: demander la durée d execution du serveur)
+* Ajout d'un bouton shutdown utilisable par l admin en utilisant /shutdown de actuator

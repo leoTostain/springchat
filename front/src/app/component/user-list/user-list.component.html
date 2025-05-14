@@ -1,0 +1,18 @@
+<div class="card my-5">
+  <div class="card-body">
+    <table class="table table-bordered table-striped">
+      <thead class="thead-dark">
+      <tr>
+        <th scope="col">Name</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (user of users; track user) {
+          <tr>
+            <td>{{ user.username }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
