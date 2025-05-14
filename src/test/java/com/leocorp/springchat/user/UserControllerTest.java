@@ -1,5 +1,6 @@
 package com.leocorp.springchat.user;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,25 +29,33 @@ public class UserControllerTest {
         this.mockMvc.perform(post("/signIn").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.title").value("Validation error"));
     }
 
     @Test
     void signInBadCredentialIsBadRequest() throws Exception {
+        var json = new JSONObject();
+        json.put("username", "");
+        json.put("password", "");
+
         this.mockMvc.perform(post("/signIn").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("username","")
-                        .param("password","")
+                        .content(json.toString())
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.title").value("Validation error"));
     }
 
     @Test
     void signInReturnUserPrivateInfo() throws Exception {
+        var json = new JSONObject();
+        json.put("username", "username");
+        json.put("password", "password");
+
         this.mockMvc.perform(post("/signIn").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("username","username")
-                .param("password","password")
+                .content(json.toString())
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

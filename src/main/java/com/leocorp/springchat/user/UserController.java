@@ -7,12 +7,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 public class UserController {
     private final UserService userService;
@@ -33,7 +36,7 @@ public class UserController {
             content = @Content)})
     @ResponseStatus(code = HttpStatus.CREATED)
     @PostMapping("/signIn")
-    public UserPrivateInfo signIn(UserCredential credential) {
+    public UserPrivateInfo signIn(@Valid @NotNull @RequestBody UserCredential credential) {
         return UserMapper.UserEntityToUserPrivateInfo(userService.createUser(credential));
     }
 
