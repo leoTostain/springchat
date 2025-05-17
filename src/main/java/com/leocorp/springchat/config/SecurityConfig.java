@@ -17,7 +17,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
+
+import java.util.Arrays;
 
 import static jakarta.servlet.DispatcherType.ERROR;
 import static jakarta.servlet.DispatcherType.FORWARD;
@@ -32,19 +36,37 @@ public class SecurityConfig {
                         .dispatcherTypeMatchers(FORWARD, ERROR).permitAll()
                         .requestMatchers("/v3/api-docs/**",
                                 "/swagger-ui/**", "/swagger-ui.html").hasRole("ADMIN")
-                        .requestMatchers("/signIn", "/user", "/users", "/login", "/").permitAll()
+                        .requestMatchers("/signIn", "/login", "/greetings").permitAll()
                         .requestMatchers("/removeUser").hasRole("USER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
 //                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(formLogin -> formLogin
-                        .defaultSuccessUrl("/"))
+//                .formLogin(form -> form.loginPage("/login.html")
+//                        .loginProcessingUrl("/perform_login")
+//                        .defaultSuccessUrl("/index.html", true)
+//                        .failureUrl("/index.html?error=true"))
+//                .formLogin(formLogin -> formLogin
+//                        .defaultSuccessUrl("/"))
 //                .httpBasic(Customizer.withDefaults())
                 .exceptionHandling(Customizer.withDefaults());
 
         return httpSecurity.build();
+    }
+
+    @Bean
+    UrlBasedCorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST", "DELETE", "PUT"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean
