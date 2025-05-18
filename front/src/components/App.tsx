@@ -1,16 +1,14 @@
 import './App.css'
 import Header from "./Header.tsx";
-import WelcomeComponent from "./WelcomeComponent.tsx";
-import AuthContent from "./AuthContent.tsx";
+import AppContent from "./AppContent.tsx";
 
 function App() {
-  return (
+    return (
     <>
       <Header title={"My app"}/>
       <div className="container-fluid">
-        <div className="row">
-          <WelcomeComponent />
-          <AuthContent />
+        <div className="row justify-content-center">
+          <AppContent />
         </div>
       </div>
     </>

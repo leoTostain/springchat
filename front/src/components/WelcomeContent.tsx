@@ -1,5 +1,5 @@
 
-export default function WelcomeComponent () {
+export default function WelcomeContent () {
 	return (
 		<div className="row justify-content-md-center">
 			<div>
