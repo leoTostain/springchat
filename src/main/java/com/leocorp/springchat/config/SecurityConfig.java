@@ -36,20 +36,31 @@ public class SecurityConfig {
                         .dispatcherTypeMatchers(FORWARD, ERROR).permitAll()
                         .requestMatchers("/v3/api-docs/**",
                                 "/swagger-ui/**", "/swagger-ui.html").hasRole("ADMIN")
-                        .requestMatchers("/signIn", "/login", "/greetings").permitAll()
+                        .requestMatchers("/register", "/login", "/greetings").permitAll()
                         .requestMatchers("/removeUser").hasRole("USER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-//                .cors(Customizer.withDefaults())
+//                .formLogin(Customizer.withDefaults())
+//                .httpBasic(Customizer.withDefaults())
+                .logout((logout) -> logout
+                        .logoutSuccessUrl("/logoutSuccess")
+                        .permitAll()
+                )
+                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
+//                .securityContext((securityContext) -> {
+//                    securityContext.securityContextRepository(new DelegatingSecurityContextRepository(
+//                            new RequestAttributeSecurityContextRepository(),
+//                            new HttpSessionSecurityContextRepository()
+//                    ));
+//                })
 //                .formLogin(form -> form.loginPage("/login.html")
 //                        .loginProcessingUrl("/perform_login")
 //                        .defaultSuccessUrl("/index.html", true)
 //                        .failureUrl("/index.html?error=true"))
 //                .formLogin(formLogin -> formLogin
 //                        .defaultSuccessUrl("/"))
-//                .httpBasic(Customizer.withDefaults())
                 .exceptionHandling(Customizer.withDefaults());
 
         return httpSecurity.build();
@@ -62,6 +73,7 @@ public class SecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "DELETE", "PUT"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         configuration.setAllowCredentials(true);
+//        configuration.setExposedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

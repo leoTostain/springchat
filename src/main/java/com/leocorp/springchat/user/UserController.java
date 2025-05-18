@@ -34,8 +34,8 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Credentials does not follow the criteria",
             content = @Content)})
     @ResponseStatus(code = HttpStatus.CREATED)
-    @PostMapping("/signIn")
-    public UserPrivateInfo signIn(@Valid @NotNull @RequestBody UserCredential credential) {
+    @PostMapping("/register")
+    public UserPrivateInfo register(@Valid @NotNull @RequestBody UserCredential credential) {
         return UserMapper.UserEntityToUserPrivateInfo(userService.createUser(credential));
     }
 
