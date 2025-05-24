@@ -1,14 +1,12 @@
-interface ButtonsProps {
-	onLogin: () => void
-	onLogout: () => void
-}
+import axios from "axios";
+import {NavLink} from "react-router";
 
-export default function LoginButtons({onLogin, onLogout}: ButtonsProps) {
+export default function LoginButtons() {
 	return (
 		<div className="row justify-content-center">
 			<div className="col-4 text-center mt-3">
-				<button className="btn btn-primary m-1" onClick={onLogin}>login</button>
-				<button className="btn btn-dark m-1" onClick={onLogout}>logout</button>
+				<NavLink to={"/login"} className={"btn btn-primary m-1"}>Login</NavLink>
+				<NavLink to={"/"} className={"btn btn-dark m-1"} onClick={() => axios.post("http://localhost:8080/logout")}>Logout</NavLink>
 			</div>
 		</div>
 	)

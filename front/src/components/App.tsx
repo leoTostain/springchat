@@ -1,14 +1,14 @@
 import './App.css'
 import Header from "./Header.tsx";
-import AppContent from "./AppContent.tsx";
+import {Outlet} from "react-router";
 
 function App() {
     return (
     <>
-      <Header title={"My app"}/>
+      <Header />
       <div className="container-fluid">
         <div className="row justify-content-center">
-          <AppContent />
+          <Outlet />
         </div>
       </div>
     </>

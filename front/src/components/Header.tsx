@@ -1,8 +1,9 @@
 import './Header.css'
 import viteLogo from '/vite.svg'
 import reactLogo from '/react.svg';
+import {NavLink} from "react-router";
 
-export default function Header({title}: {title: string}) {
+export default function Header() {
 	return (
 		<header>
 			<a href="https://vite.dev" target="_blank">
@@ -11,7 +12,7 @@ export default function Header({title}: {title: string}) {
 			<a href="https://react.dev" target="_blank">
 				<img src={reactLogo} className="logo react" alt="React logo" />
 			</a>
-			<h1 className="app-title">{title}</h1>
+			<NavLink to={"/"} className={"text-decoration-none"}><h1 className="app-title">SpringChat</h1></NavLink>
 		</header>
 	)
 }
