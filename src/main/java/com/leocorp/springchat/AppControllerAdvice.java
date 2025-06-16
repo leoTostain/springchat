@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.method.MethodValidationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -33,6 +34,17 @@ public class AppControllerAdvice {
         problemDetail.setProperty("error", ex.getMessage());
 
         log.warn(ex.getParameterValidationResults().toString());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ProblemDetail handleBadCredentialsException(BadCredentialsException ex, HttpServletRequest request) {
+        var problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problemDetail.setTitle("Credential Validation Error");
+        problemDetail.setDetail("Bad credentials");
+        problemDetail.setProperty("error", ex.getMessage());
+
+        log.warn(ex.getLocalizedMessage());
         return problemDetail;
     }
 }
